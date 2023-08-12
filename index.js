@@ -42,6 +42,9 @@ async function run() {
     // cartCollection
     const cartCollection = db.collection("cartProducts");
 
+    // customers collection
+    const customersCollection = db.collection("customers");
+
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
       const products = await cursor.toArray();
@@ -73,6 +76,21 @@ async function run() {
       console.log(cart);
       const result = await cartCollection.insertOne(cart);
       res.send(result);
+    });
+
+    // delete from cart
+    app.delete("/cartItemDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // get all customers
+    app.get("/customers", async (req, res) => {
+      const cursor = customersCollection.find({});
+      const customers = await cursor.toArray();
+      res.send(customers);
     });
 
     // Send a ping to confirm a successful connection
